@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>K8s UI</title>
+</head>
+<body>
+    <h1>Pods</h1>
+    <table border="1">
+        <tr><th>Name</th><th>Namespace</th><th>Action</th></tr>
+        {% for pod in pods %}
+        <tr>
+            <td>{{ pod.metadata.name }}</td>
+            <td>{{ pod.metadata.namespace }}</td>
+            <td>
+                <form method="post" action="/delete_pod">
+                    <input type="hidden" name="name" value="{{ pod.metadata.name }}">
+                    <input type="hidden" name="namespace" value="{{ pod.metadata.namespace }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
