@@ -16,7 +16,7 @@ spec:
       containers:
         - name: frontend
           # 使用本地构建好的镜像
-          image: cuiziwenn/k8s-ui-frontend:v1.0
+          image: cuiziwenn/k8s-ui-frontend:v1.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

@@ -1,15 +1,24 @@
-# 使用轻量级 Nginx 作为前端生产环境
+# 构建阶段
+FROM node:20-alpine AS build
+WORKDIR /app
+
+# 切换到国内镜像源（可选）
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
+# 安装构建依赖
+RUN apk add --no-cache python3 make g++ git
+
+COPY package.json package-lock.json* ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+# 生产阶段
 FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# 设置工作目录
-WORKDIR /usr/share/nginx/html
-
-# 拷贝本地构建好的 dist 文件
-COPY ./dist .
-
-# 暴露端口
 EXPOSE 80
-
-# 启动 Nginx
 CMD ["nginx", "-g", "daemon off;"]
 

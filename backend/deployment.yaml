@@ -1,3 +1,33 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: backend-rolebinding
+  namespace: apps
+subjects:
+  - kind: ServiceAccount
+    name: backend-sa
+roleRef:
+  kind: Role
+  name: backend-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: apps
+  name: backend-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: backend-sa
+  namespace: apps
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,6 +43,7 @@ spec:
       labels:
         app: k8s-ui-backend
     spec:
+      serviceAccountName: backend-sa
       containers:
         - name: backend
           image: cuiziwenn/k8s-ui-backend:v1.0
