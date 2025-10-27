@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-ui-frontend
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-ui-frontend
+  template:
+    metadata:
+      labels:
+        app: k8s-ui-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: k8s-ui-frontend:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: VITE_API_BASE
+          value: "http://k8s-ui-backend:8000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8s-ui-frontend
+  namespace: apps
+spec:
+  selector:
+    app: k8s-ui-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

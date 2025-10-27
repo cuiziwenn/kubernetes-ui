@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: k8s-ui-ingress
+  namespace: apps
+  annotations:
+    kubesphere.io/creator: admin
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - k8s.svss.cn
+      secretName: ingress-secret
+  rules:
+    - host: k8s.svss.cn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: k8s-ui-frontend
+                port:
+                  number: 80
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: k8s-ui-backend
+                port:
+                  number: 8000

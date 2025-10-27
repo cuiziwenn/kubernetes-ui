@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-ui-backend
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-ui-backend
+  template:
+    metadata:
+      labels:
+        app: k8s-ui-backend
+    spec:
+      containers:
+      - name: backend
+        image: k8s-ui-backend:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: KUBERNETES_SERVICE_HOST
+          value: "kubernetes.default.svc"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8s-ui-backend
+  namespace: apps
+spec:
+  selector:
+    app: k8s-ui-backend
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+
